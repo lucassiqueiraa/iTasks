@@ -1,4 +1,5 @@
-﻿using iTasks.models.Data;
+﻿using iTasks.controller;
+using iTasks.models.Data;
 using iTasks.models.Enums;
 using iTasks.models.Usuarios;
 using System;
@@ -20,6 +21,8 @@ namespace iTasks
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Manager manager = new Manager();
+
             using (var db = new iTasksContext())
             {
                 // Verifica se já existe um utilizador com o username "admin"
@@ -62,7 +65,7 @@ namespace iTasks
                     // Se já for gestor, não faz nada
                 }
             }
-            Application.Run(new frmLogin());
+            Application.Run(new frmLogin(manager));
 
 
            

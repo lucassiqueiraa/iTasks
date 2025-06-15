@@ -1,5 +1,4 @@
-﻿using iTasks.controller;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,15 +10,13 @@ using System.Windows.Forms;
 
 namespace iTasks
 {
-    public partial class frmKanban : Form
+    public partial class iTasks : Form
     {
-        Manager manager { get; set; }
-        public frmKanban(Manager manager)
+        public iTasks()
         {
             InitializeComponent();
-            this.manager = manager;
         }
 
-
+       
     }
 }
