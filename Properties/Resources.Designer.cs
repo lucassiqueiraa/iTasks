@@ -63,16 +63,6 @@ namespace iTasks.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap logo3Itasks {
-            get {
-                object obj = ResourceManager.GetObject("logo3Itasks", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap logoItasks {
             get {
                 object obj = ResourceManager.GetObject("logoItasks", resourceCulture);

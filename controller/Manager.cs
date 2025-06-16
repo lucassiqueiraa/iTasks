@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using iTasks.models.Usuarios;
 
 namespace iTasks.controller
 {
@@ -49,9 +50,9 @@ namespace iTasks.controller
             ShowForm(ref frmLogin, toggle, this);
         }
 
-        public void ShowKanbanForm(bool toggle = true)
+        public void ShowKanbanForm(Utilizador user, bool toggle = true)
         {
-            ShowForm(ref frmKanban, toggle, this);
+            ShowForm(ref frmKanban, toggle, this, user);
         }
 
 

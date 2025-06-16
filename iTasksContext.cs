@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace iTasks.models.Data
+namespace iTasks
 {
     public class iTasksContext : DbContext
     {

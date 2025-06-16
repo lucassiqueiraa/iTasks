@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iTasks.controller;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +13,42 @@ namespace iTasks
 {
     public partial class iTasks : Form
     {
+        private Timer timer;
         public iTasks()
         {
             InitializeComponent();
+
+            timer = new Timer();
+
+            timer.Interval = new Random().Next(2001, 3001);
+
+            timer.Tick += new EventHandler(HandleLoginForm);
         }
 
-       
+        private void iTasks_Load(object sender, EventArgs e)
+        {
+            timer.Start();
+        }
+
+        private void HandleLoginForm(object sender, EventArgs e)
+        {
+            timer.Stop();
+            this.Hide();
+
+            Manager manager = new Manager();
+            manager.ShowLoginForm(true);
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            // Clean up the timer
+            if (timer != null)
+            {
+                timer.Dispose();
+            }
+            base.OnFormClosed(e);
+        }
+
+
     }
 }
