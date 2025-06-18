@@ -53,7 +53,7 @@ namespace iTasks
                     if (user is models.Usuarios.Gestor || user is models.Usuarios.Programador)
                     {
                         this.manager.ShowKanbanForm(user, true);
-                        //this.manager.currentForm = new frmKanban(this.manager, user);
+                        this.manager.currentForm = new frmKanban(this.manager, user);
                     }
                     else
                     {
