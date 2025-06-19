@@ -37,6 +37,9 @@ namespace iTasks
             }
         }
 
-
+        private void gerirUtilizadoresToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.manager.ShowGereUtilzadoresForm(true);
+        }
     }
 }

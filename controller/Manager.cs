@@ -12,19 +12,21 @@ namespace iTasks.controller
     {
         public Form currentForm = null;
 
+        public Utilizador usuarioLogado { get; set; }
+
         private bool isClosing = false;
 
         private frmLogin frmLogin = null;
         private frmKanban frmKanban = null;
+        private frmGereUtilizadores frmGereUtilizadores = null;
 
         private void ShowForm<T>(ref T form, bool toggle = true, params object[] args) where T : Form
         {
             if (isClosing)
                 return;
 
-            this.currentForm = form;
-
             this.DestroyCurrentForm();
+            
 
             if (currentForm == null || currentForm.GetType() != typeof(T))
             {
@@ -42,7 +44,7 @@ namespace iTasks.controller
             }
         }
 
-        
+
 
 
         public void ShowLoginForm(bool toggle = true)
@@ -50,9 +52,14 @@ namespace iTasks.controller
             ShowForm(ref frmLogin, toggle, this);
         }
 
-        public void ShowKanbanForm(Utilizador user, bool toggle = true)
+        public void ShowKanbanForm(Utilizador user = null, bool toggle = true)
         {
-            ShowForm(ref frmKanban, toggle, this, user);
+            ShowForm(ref frmKanban, toggle, this, user ?? this.usuarioLogado);
+        }
+
+        public void ShowGereUtilzadoresForm(bool toggle = true)
+        {
+            ShowForm(ref frmGereUtilizadores, toggle, this);
         }
 
 
