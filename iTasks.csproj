@@ -102,6 +102,7 @@
     <Compile Include="forms\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\StringHelper.cs" />
     <Compile Include="helpers\Validator.cs" />
     <Compile Include="iTasks.cs">
       <SubType>Form</SubType>
