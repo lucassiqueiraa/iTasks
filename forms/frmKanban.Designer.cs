@@ -180,6 +180,7 @@
             this.gerirTiposDeTarefasToolStripMenuItem.Name = "gerirTiposDeTarefasToolStripMenuItem";
             this.gerirTiposDeTarefasToolStripMenuItem.Size = new System.Drawing.Size(235, 26);
             this.gerirTiposDeTarefasToolStripMenuItem.Text = "Gerir Tipos de Tarefas";
+            this.gerirTiposDeTarefasToolStripMenuItem.Click += new System.EventHandler(this.gerirTiposDeTarefasToolStripMenuItem_Click);
             // 
             // listagensToolStripMenuItem
             // 
@@ -193,13 +194,13 @@
             // tarefasTerminadasToolStripMenuItem
             // 
             this.tarefasTerminadasToolStripMenuItem.Name = "tarefasTerminadasToolStripMenuItem";
-            this.tarefasTerminadasToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
+            this.tarefasTerminadasToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.tarefasTerminadasToolStripMenuItem.Text = "Tarefas Concluídas";
             // 
             // tarefasEmCursoToolStripMenuItem
             // 
             this.tarefasEmCursoToolStripMenuItem.Name = "tarefasEmCursoToolStripMenuItem";
-            this.tarefasEmCursoToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
+            this.tarefasEmCursoToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.tarefasEmCursoToolStripMenuItem.Text = "Tarefas em Curso";
             // 
             // btSetDoing

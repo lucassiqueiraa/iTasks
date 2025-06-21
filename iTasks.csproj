@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="controller\FormManager.cs" />
+    <Compile Include="controller\TarefaController.cs" />
+    <Compile Include="controller\TipoTarefaController.cs" />
     <Compile Include="controller\UsuarioController.cs" />
     <Compile Include="forms\frmConsultarTarefasConcluidas.cs">
       <SubType>Form</SubType>

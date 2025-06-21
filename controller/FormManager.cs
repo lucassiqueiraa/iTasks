@@ -19,6 +19,7 @@ namespace iTasks.controller
         private frmLogin frmLogin = null;
         private frmKanban frmKanban = null;
         private frmGereUtilizadores frmGereUtilizadores = null;
+        private frmGereTiposTarefas frmGereTiposTarefas = null;
 
         private void ShowForm<T>(ref T form, bool toggle = true, params object[] args) where T : Form
         {
@@ -60,6 +61,11 @@ namespace iTasks.controller
         public void ShowGereUtilzadoresForm(bool toggle = true)
         {
             ShowForm(ref frmGereUtilizadores, toggle, this);
+        }
+
+        public void ShowGereTiposTarefasForm(bool toggle = true)
+        {
+            ShowForm(ref frmGereTiposTarefas, toggle, this);
         }
 
 

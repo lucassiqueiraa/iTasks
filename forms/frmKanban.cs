@@ -41,5 +41,10 @@ namespace iTasks
         {
             this.manager.ShowGereUtilzadoresForm(true);
         }
+
+        private void gerirTiposDeTarefasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.manager.ShowGereTiposTarefasForm(true);
+        }
     }
 }
