@@ -36,6 +36,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnGravar = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
+            this.btnLimpar = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -101,7 +102,7 @@
             // 
             // btnGravar
             // 
-            this.btnGravar.Location = new System.Drawing.Point(424, 143);
+            this.btnGravar.Location = new System.Drawing.Point(417, 175);
             this.btnGravar.Margin = new System.Windows.Forms.Padding(4);
             this.btnGravar.Name = "btnGravar";
             this.btnGravar.Size = new System.Drawing.Size(185, 28);
@@ -112,7 +113,7 @@
             // 
             // btnEliminar
             // 
-            this.btnEliminar.Location = new System.Drawing.Point(674, 143);
+            this.btnEliminar.Location = new System.Drawing.Point(674, 175);
             this.btnEliminar.Margin = new System.Windows.Forms.Padding(4);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(185, 28);
@@ -121,11 +122,23 @@
             this.btnEliminar.UseVisualStyleBackColor = true;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
+            // btnLimpar
+            // 
+            this.btnLimpar.Location = new System.Drawing.Point(674, 96);
+            this.btnLimpar.Margin = new System.Windows.Forms.Padding(4);
+            this.btnLimpar.Name = "btnLimpar";
+            this.btnLimpar.Size = new System.Drawing.Size(185, 28);
+            this.btnLimpar.TabIndex = 33;
+            this.btnLimpar.Text = "Limpar ";
+            this.btnLimpar.UseVisualStyleBackColor = true;
+            this.btnLimpar.Click += new System.EventHandler(this.btnLimpar_Click);
+            // 
             // frmGereTiposTarefas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(885, 497);
+            this.Controls.Add(this.btnLimpar);
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnGravar);
             this.Controls.Add(this.txtDesc);
@@ -153,5 +166,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnGravar;
         private System.Windows.Forms.Button btnEliminar;
+        private System.Windows.Forms.Button btnLimpar;
     }
 }
