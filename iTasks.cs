@@ -35,7 +35,7 @@ namespace iTasks
             timer.Stop();
             this.Hide();
 
-            Manager manager = new Manager();
+            FormManager manager = new FormManager();
             manager.ShowLoginForm(true);
         }
 

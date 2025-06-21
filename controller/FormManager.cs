@@ -8,7 +8,7 @@ using iTasks.models.Usuarios;
 
 namespace iTasks.controller
 {
-    public class Manager
+    public class FormManager
     {
         public Form currentForm = null;
 

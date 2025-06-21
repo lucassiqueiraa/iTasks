@@ -13,8 +13,8 @@ namespace iTasks
 {
     public partial class frmLogin : Form
     {
-        private Manager manager { get; set; }
-        public frmLogin(Manager manager)
+        private FormManager manager { get; set; }
+        public frmLogin(FormManager manager)
         {
             InitializeComponent();
             this.manager = manager;

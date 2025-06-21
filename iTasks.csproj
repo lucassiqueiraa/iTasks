@@ -59,7 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="controller\Manager.cs" />
+    <Compile Include="controller\FormManager.cs" />
+    <Compile Include="controller\UsuarioController.cs" />
     <Compile Include="forms\frmConsultarTarefasConcluidas.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +103,7 @@
     <Compile Include="forms\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\MessageHelper.cs" />
     <Compile Include="helpers\StringHelper.cs" />
     <Compile Include="helpers\Validator.cs" />
     <Compile Include="iTasks.cs">
@@ -109,6 +111,10 @@
     </Compile>
     <Compile Include="iTasks.Designer.cs">
       <DependentUpon>iTasks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202506211518041_AddAtivoToUtilizador.cs" />
+    <Compile Include="Migrations\202506211518041_AddAtivoToUtilizador.Designer.cs">
+      <DependentUpon>202506211518041_AddAtivoToUtilizador.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="iTasksContext.cs" />
@@ -145,6 +151,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="iTasks.resx">
       <DependentUpon>iTasks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202506211518041_AddAtivoToUtilizador.resx">
+      <DependentUpon>202506211518041_AddAtivoToUtilizador.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

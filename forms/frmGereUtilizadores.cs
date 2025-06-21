@@ -3,117 +3,146 @@ using iTasks.models.Enums;
 using iTasks.models.Usuarios;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using iTasks.helpers;   
+using iTasks.helpers;
 
 namespace iTasks
 {
     public partial class frmGereUtilizadores : Form
     {
-        private Manager manager { get; set; }
+        private FormManager formManager { get; set; }
+        private UsuarioController usuarioController = new UsuarioController();
 
         private int? selectedGestorId = null;
         private int? selectedProgramadorId = null;
 
-
-        public frmGereUtilizadores(Manager manager)
+        public frmGereUtilizadores(FormManager formManager)
         {
             InitializeComponent();
-            this.manager = manager;
+            this.formManager = formManager;
             LoadComboBoxes();
             LoadUsersFromDatabase();
-
         }
 
-        // Method to load and separate users
+        #region Geral
+
         private void LoadUsersFromDatabase()
         {
-            // Example: replace with your real database access method
-            List<Utilizador> allUsers = GetAllUsersFromDatabase();
+            var gestores = chkMostrarDesativadosGestores.Checked
+                ? usuarioController.ListarGestoresDesativados()
+                : usuarioController.ListarGestores();
 
-            var managers = allUsers
-                .Where(u => u is Gestor)
-                .ToList();
+            var programadores = chkMostrarDesativadosProgramadores.Checked
+                ? usuarioController.ListarProgramadoresDesativados()
+                : usuarioController.ListarProgramadores();
 
-            var developers = allUsers
-                .Where(u => u is Programador)
-                .ToList();
+            PopulateList(lstListaGestores, gestores);
+            PopulateList(lstListaProgramadores, programadores);
 
-            PopulateManagerList(managers);
-            PopulateDeveloperList(developers);
+            AtualizarComboGestores();
         }
 
-        // Helper methods to populate ListBox:
-        private void PopulateManagerList(List<Utilizador> managers)
+        private void PopulateList<T>(ListBox listBox, List<T> usuarios) where T : Utilizador
         {
-            lstListaGestores.Items.Clear();
-            foreach (var manager in managers)
+            listBox.Items.Clear();
+            foreach (var usuario in usuarios)
             {
-                lstListaGestores.Items.Add($"{manager.Id} - {manager.Nome} ({manager.Username})");
+                listBox.Items.Add($"{usuario.Id} - {usuario.Nome} ({usuario.Username})");
             }
         }
 
-        private void PopulateDeveloperList(List<Utilizador> developers)
+        private void LoadComboBoxes()
         {
-            lstListaProgramadores.Items.Clear();
-            foreach (var developer in developers)
+            cbDepartamento.DataSource = Enum.GetValues(typeof(Departamento));
+            cbNivelProg.DataSource = Enum.GetValues(typeof(NivelExperiencia));
+            AtualizarComboGestores();
+        }
+
+        private void AtualizarComboGestores()
+        {
+            var gestoresCombo = usuarioController.ListarGestores();
+            cbGestorProg.DataSource = null;
+            cbGestorProg.DataSource = gestoresCombo;
+            cbGestorProg.DisplayMember = "Nome";
+            cbGestorProg.ValueMember = "Id";
+        }
+
+        private void SelecionarNaLista(ListBox listBox, int usuarioId, ref int? selectedId)
+        {
+            foreach (var item in listBox.Items)
             {
-                lstListaProgramadores.Items.Add($"{developer.Id} - {developer.Nome} ({developer.Username})");
+                int id = StringHelper.ExtractIdFromFormattedText(item.ToString());
+                if (id == usuarioId)
+                {
+                    listBox.SelectedItem = item;
+                    selectedId = usuarioId;
+                    break;
+                }
             }
         }
 
-        // Example method to retrieve all users from the database
-        // Replace with your actual implementation (Entity Framework, ADO.NET, etc.)
-        private List<Utilizador> GetAllUsersFromDatabase()
+        private void AtivarOuDesativarUsuario(
+            int? selectedId, string tipoUsuario, bool ativar,
+            Action<int> ativarAction, Action<int> desativarAction,
+            Action reloadAction, Action clearFormAction)
         {
-            using (var db = new iTasksContext())
+            if (!selectedId.HasValue)
             {
-                return db.Utilizadores.ToList();
+                MessageHelper.ShowError($"Nenhum {tipoUsuario} selecionado.");
+                return;
+            }
+            if (!MessageHelper.ShowConfirmation($"Tem certeza que deseja {(ativar ? "ativar" : "desativar")} este {tipoUsuario}?"))
+                return;
+
+            try
+            {
+                if (ativar)
+                    ativarAction(selectedId.Value);
+                else
+                    desativarAction(selectedId.Value);
+
+                reloadAction();
+                clearFormAction();
+
+                MessageHelper.ShowSuccess($"{tipoUsuario} {(ativar ? "ativado" : "desativado")} com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError($"Erro ao {(ativar ? "ativar" : "desativar")} {tipoUsuario}: {ex.Message}");
             }
         }
 
         private void frmGereUtilizadores_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.manager.ShowKanbanForm();
+            this.formManager.ShowKanbanForm();
         }
 
-        private void LoadComboBoxes()
-        {
-            // Preencher enum
-            cbDepartamento.DataSource = Enum.GetValues(typeof(Departamento));
-            cbNivelProg.DataSource =  Enum.GetValues(typeof(NivelExperiencia));
+        #endregion
 
-            using (var db = new iTasksContext())
-            {
-                // Preencher gestores
-                cbGestorProg.DataSource = db.Gestores.ToList();
-                cbGestorProg.DisplayMember = "Nome";
-                cbGestorProg.ValueMember = "Id";
-            }
-
-        }
+        #region Gestores
 
         private void btGravarGestor_Click(object sender, EventArgs e)
         {
-            using (var db = new iTasksContext())
-            {
-                Gestor gestor;
+            if (!CamposGestorValidos())
+                return;
 
+            Gestor gestor;
+            try
+            {
                 if (selectedGestorId.HasValue)
                 {
-                    gestor = db.Gestores.FirstOrDefault(g => g.Id == selectedGestorId.Value);
-                    if (gestor == null) return; // Segurança
+                    gestor = usuarioController.ObterGestorPorId(selectedGestorId.Value);
+                    if (gestor == null)
+                    {
+                        MessageHelper.ShowError("Gestor não encontrado.");
+                        return;
+                    }
                 }
                 else
                 {
                     gestor = new Gestor();
-                    db.Gestores.Add(gestor);
                 }
 
                 gestor.Nome = txtNomeGestor.Text;
@@ -122,25 +151,18 @@ namespace iTasks
                 gestor.Departamento = (Departamento)cbDepartamento.SelectedItem;
                 gestor.GereUtilizadores = chkGereUtilizadores.Checked;
 
-                db.SaveChanges();
+                usuarioController.SalvarGestor(gestor);
                 LoadUsersFromDatabase();
-                ClearGestorForm();
+
+                SelecionarNaLista(lstListaGestores, gestor.Id, ref selectedGestorId);
+                MessageHelper.ShowSuccess("Gestor salvo com sucesso!");
+                LimparFormularioGestor();
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError($"Erro ao salvar gestor: {ex.Message}");
             }
         }
-
-
-        private void ClearGestorForm()
-        {
-            txtNomeGestor.Text = "";
-            txtUsernameGestor.Text = "";
-            txtPasswordGestor.Text = "";
-            cbDepartamento.SelectedIndex = 0;
-            chkGereUtilizadores.Checked = false;
-            lstListaGestores.ClearSelected();
-            selectedGestorId = null;
-        }
-
-
 
         private void lstListaGestores_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -149,105 +171,182 @@ namespace iTasks
                 int id = StringHelper.ExtractIdFromFormattedText(selectedInfo);
                 selectedGestorId = id;
 
-                using (var db = new iTasksContext())
+                var gestor = usuarioController.ObterGestorPorId(id);
+                if (gestor != null)
                 {
-                    var gestor = db.Gestores.FirstOrDefault(g => g.Id == id);
-                    if (gestor != null)
-                    {
-                        txtNomeGestor.Text = gestor.Nome;
-                        txtUsernameGestor.Text = gestor.Username;
-                        txtPasswordGestor.Text = gestor.Password;
-                        cbDepartamento.SelectedItem = gestor.Departamento;
-                        chkGereUtilizadores.Checked = gestor.GereUtilizadores;
-                    }
+                    txtNomeGestor.Text = gestor.Nome;
+                    txtUsernameGestor.Text = gestor.Username;
+                    txtPasswordGestor.Text = gestor.Password;
+                    cbDepartamento.SelectedItem = gestor.Departamento;
+                    chkGereUtilizadores.Checked = gestor.GereUtilizadores;
                 }
             }
         }
 
-
-
-
-        private void lstListaProgramadores_SelectedIndexChanged(object sender, EventArgs e)
+        private void LimparFormularioGestor()
         {
-            if (lstListaProgramadores.SelectedItem is string selectedInfo)
-            {
-                int id = StringHelper.ExtractIdFromFormattedText(selectedInfo); // sua função para extrair o ID do texto da ListBox
-                selectedProgramadorId = id;
-
-                using (var db = new iTasksContext())
-                {
-                    var programador = db.Programadores.Include("Gestor").FirstOrDefault(p => p.Id == id);
-                    if (programador != null)
-                    {   txtNomeProg.Text = programador.Nome;
-                        txtUsernameProg.Text = programador.Username;
-                        txtPasswordProg.Text = programador.Password;
-
-                        cbGestorProg.DataSource = db.Gestores.ToList();
-                        cbGestorProg.DisplayMember = "Nome";
-                        cbGestorProg.ValueMember = "Id";
-                        cbGestorProg.SelectedValue = programador.GestorId;
-
-                        cbNivelProg.DataSource = Enum.GetValues(typeof(NivelExperiencia));
-                        cbNivelProg.SelectedItem = programador.NivelExperiencia;
-                    }
-                }
-            }
+            txtNomeGestor.Text = "";
+            txtUsernameGestor.Text = "";
+            txtPasswordGestor.Text = "";
+            cbDepartamento.SelectedIndex = 0;
+            chkGereUtilizadores.Checked = false;
+            lstListaGestores.SelectedItem = null;
+            selectedGestorId = null;
         }
+
+        private bool CamposGestorValidos()
+        {
+            if (string.IsNullOrWhiteSpace(txtNomeGestor.Text) ||
+                string.IsNullOrWhiteSpace(txtUsernameGestor.Text) ||
+                string.IsNullOrWhiteSpace(txtPasswordGestor.Text) ||
+                cbDepartamento.SelectedItem == null)
+            {
+                MessageHelper.ShowError("Preencha todos os campos obrigatórios do gestor.");
+                return false;
+            }
+            return true;
+        }
+
+        private void chkMostrarDesativadosGestores_CheckedChanged(object sender, EventArgs e)
+        {
+            LoadUsersFromDatabase();
+            btnAtivarDesativarGestor.Text = chkMostrarDesativadosGestores.Checked ? "Ativar Gestor" : "Desativar Gestor";
+        }
+
+        private void btnAtivarDesativarGestor_Click(object sender, EventArgs e)
+        {
+            AtivarOuDesativarUsuario(
+                selectedGestorId,
+                "gestor",
+                chkMostrarDesativadosGestores.Checked,
+                usuarioController.AtivarUsuario,
+                usuarioController.DesativarUsuario,
+                LoadUsersFromDatabase,
+                LimparFormularioGestor
+            );
+        }
+
+        #endregion
+
+        #region Programadores
 
         private void btGravarProg_Click(object sender, EventArgs e)
         {
-            using (var db = new iTasksContext())
+            if (!CamposProgramadorValidos())
+                return;
+
+            Programador programador;
+            try
             {
-                Programador programador;
                 if (selectedProgramadorId.HasValue)
                 {
-                    programador = db.Programadores.FirstOrDefault(p => p.Id == selectedProgramadorId.Value);
-                    if (programador == null) return; // Segurança
+                    programador = usuarioController.ObterProgramadorPorId(selectedProgramadorId.Value);
+                    if (programador == null)
+                    {
+                        MessageHelper.ShowError("Programador não encontrado.");
+                        return;
+                    }
                 }
                 else
                 {
                     programador = new Programador();
-                    db.Programadores.Add(programador);
                 }
+
                 programador.Nome = txtNomeProg.Text;
                 programador.Username = txtUsernameProg.Text;
                 programador.Password = txtPasswordProg.Text;
                 programador.GestorId = (int)cbGestorProg.SelectedValue;
                 programador.NivelExperiencia = (NivelExperiencia)cbNivelProg.SelectedItem;
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (System.Data.Entity.Validation.DbEntityValidationException ex)
-                {
-                    foreach (var validationErrors in ex.EntityValidationErrors)
-                    {
-                        foreach (var validationError in validationErrors.ValidationErrors)
-                        {
-                            MessageBox.Show($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
-                        }
-                    }
-                }
+
+                usuarioController.SalvarProgramador(programador);
 
                 LoadUsersFromDatabase();
-                ClearProgramadorForm();
-            }
 
+                SelecionarNaLista(lstListaProgramadores, programador.Id, ref selectedProgramadorId);
+                MessageHelper.ShowSuccess("Programador salvo com sucesso!");
+                LimparFormularioProgramador();
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        MessageHelper.ShowError($"Campo: {validationError.PropertyName} Erro: {validationError.ErrorMessage}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError($"Erro ao salvar programador: {ex.Message}");
+            }
         }
 
-        private void ClearProgramadorForm()
+        private void lstListaProgramadores_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstListaProgramadores.SelectedItem is string selectedInfo)
+            {
+                int id = StringHelper.ExtractIdFromFormattedText(selectedInfo);
+                selectedProgramadorId = id;
+
+                var programador = usuarioController.ObterProgramadorPorId(id);
+                if (programador != null)
+                {
+                    txtNomeProg.Text = programador.Nome;
+                    txtUsernameProg.Text = programador.Username;
+                    txtPasswordProg.Text = programador.Password;
+                    cbGestorProg.SelectedValue = programador.GestorId;
+                    cbNivelProg.SelectedItem = programador.NivelExperiencia;
+                }
+            }
+        }
+
+        private void LimparFormularioProgramador()
         {
             txtNomeProg.Text = "";
             txtUsernameProg.Text = "";
             txtPasswordProg.Text = "";
             cbNivelProg.SelectedIndex = 0;
             cbGestorProg.SelectedIndex = 0;
-
-            lstListaProgramadores.ClearSelected();
+            lstListaProgramadores.SelectedItem = null;
             selectedProgramadorId = null;
         }
 
+        private bool CamposProgramadorValidos()
+        {
+            if (string.IsNullOrWhiteSpace(txtNomeProg.Text) ||
+                string.IsNullOrWhiteSpace(txtUsernameProg.Text) ||
+                string.IsNullOrWhiteSpace(txtPasswordProg.Text) ||
+                cbGestorProg.SelectedItem == null ||
+                cbNivelProg.SelectedItem == null)
+            {
+                MessageHelper.ShowError("Preencha todos os campos obrigatórios do programador.");
+                return false;
+            }
+            return true;
+        }
 
+        private void chkMostrarDesativadosProgramadores_CheckedChanged(object sender, EventArgs e)
+        {
+            LoadUsersFromDatabase();
+            btnAtivarDesativarProg.Text = chkMostrarDesativadosProgramadores.Checked
+                ? "Ativar Programador"
+                : "Desativar Programador";
+        }
 
+        private void btnAtivarDesativarProg_Click(object sender, EventArgs e)
+        {
+            AtivarOuDesativarUsuario(
+                selectedProgramadorId,
+                "programador",
+                chkMostrarDesativadosProgramadores.Checked,
+                usuarioController.AtivarUsuario,
+                usuarioController.DesativarUsuario,
+                LoadUsersFromDatabase,
+                LimparFormularioProgramador
+            );
+        }
+
+        #endregion
     }
 }

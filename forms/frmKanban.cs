@@ -14,9 +14,9 @@ namespace iTasks
 {
     public partial class frmKanban : Form
     {
-        Manager manager { get; set; }
+        FormManager manager { get; set; }
         private Utilizador user;
-        public frmKanban(Manager manager, Utilizador user)
+        public frmKanban(FormManager manager, Utilizador user)
         {
             InitializeComponent();
             this.manager = manager;
