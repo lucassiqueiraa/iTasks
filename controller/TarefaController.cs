@@ -16,6 +16,7 @@ namespace iTasks.controller
                 var query = db.Tarefas.Include("TipoTarefa").Include("Programador").Include("Gestor")
                     .Where(t => t.EstadoAtual == estado);
 
+                //Se passarmos um idProgramador, filtramos por ele
                 if (idProgramador.HasValue)
                     query = query.Where(t => t.ProgramadorId == idProgramador.Value);
 

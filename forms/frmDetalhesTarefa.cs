@@ -36,6 +36,7 @@ namespace iTasks
                 CarregarDadosTarefa(tarefaId.Value);
             else
                 InicializarNovo();
+            AplicarModoReadOnlySeProgramador();
         }
 
 
@@ -189,6 +190,23 @@ namespace iTasks
                 MessageBox.Show("Tarefa atualizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             this.Close();
+        }
+
+        private void AplicarModoReadOnlySeProgramador()
+        {
+            if (usuarioLogado is Programador)
+            {
+                // Torna todos os campos somente leitura/desabilitados
+                txtDescricao.ReadOnly = true;
+                txtOrdem.ReadOnly = true;
+                txtStoryPoints.ReadOnly = true;
+                cbTipoTarefa.Enabled = false;
+                cbProgramador.Enabled = false;
+                dtInicio.Enabled = false;
+                dtFim.Enabled = false;
+                btGravar.Enabled = false;
+               
+            }
         }
 
         private void frmDetalhesTarefa_FormClosing(object sender, FormClosingEventArgs e)

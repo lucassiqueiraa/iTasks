@@ -38,15 +38,15 @@ namespace iTasks
 
         private void AtualizarKanban()
         {
-            int? idProgramador = (user is Programador) ? user.Id : (int?)null;
+            //int? idProgramador = (user is Programador) ? user.Id : (int?)null;
 
-            lstTodo.DataSource = tarefaController.ListarPorEstado(EstadoTarefa.ToDo, idProgramador);
+            lstTodo.DataSource = tarefaController.ListarPorEstado(EstadoTarefa.ToDo, null);
             lstTodo.DisplayMember = "Descricao";
 
-            lstDoing.DataSource = tarefaController.ListarPorEstado(EstadoTarefa.Doing, idProgramador);
+            lstDoing.DataSource = tarefaController.ListarPorEstado(EstadoTarefa.Doing, null);
             lstDoing.DisplayMember = "Descricao";
 
-            lstDone.DataSource = tarefaController.ListarPorEstado(EstadoTarefa.Done, idProgramador);
+            lstDone.DataSource = tarefaController.ListarPorEstado(EstadoTarefa.Done, null);
             lstDone.DisplayMember = "Descricao";
         }
 
