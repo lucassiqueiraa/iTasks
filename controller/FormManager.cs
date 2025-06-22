@@ -20,6 +20,7 @@ namespace iTasks.controller
         private frmKanban frmKanban = null;
         private frmGereUtilizadores frmGereUtilizadores = null;
         private frmGereTiposTarefas frmGereTiposTarefas = null;
+        private frmDetalhesTarefa frmDetalhesTarefa = null;
 
         private void ShowForm<T>(ref T form, bool toggle = true, params object[] args) where T : Form
         {
@@ -67,6 +68,15 @@ namespace iTasks.controller
         {
             ShowForm(ref frmGereTiposTarefas, toggle, this);
         }
+
+        public void ShowDetalhesTarefaForm(Utilizador user, bool toggle = true, int? tarefaId = null)
+        {
+            if (tarefaId.HasValue)
+                ShowForm(ref frmDetalhesTarefa, toggle, this, user, tarefaId.Value);
+            else
+                ShowForm(ref frmDetalhesTarefa, toggle, this, user);
+        }
+
 
 
         private void DestroyCurrentForm()
