@@ -68,7 +68,7 @@ namespace iTasks.controller
                 if (tarefa.EstadoAtual != EstadoTarefa.ToDo) { erro = "A tarefa deve estar em ToDo para ser executada."; return false; }
 
                 // Verifica ordem (deve ser a menor ordem entre as pendentes)
-                var ordemMinima = db.Tarefas.Where(t => t.ProgramadorId == programadorId && (t.EstadoAtual == EstadoTarefa.ToDo || t.EstadoAtual == EstadoTarefa.Doing)).Min(t => t.OrdemExecucao);
+                var ordemMinima = db.Tarefas.Where(t => t.ProgramadorId == programadorId && (t.EstadoAtual == EstadoTarefa.ToDo)).Min(t => t.OrdemExecucao);
                 if (tarefa.OrdemExecucao != ordemMinima) { erro = "Execute primeiro a tarefa de menor ordem."; return false; }
 
                 // Máximo 2 Doing
