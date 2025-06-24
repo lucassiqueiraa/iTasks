@@ -95,6 +95,7 @@
             this.cbProgramador.Name = "cbProgramador";
             this.cbProgramador.Size = new System.Drawing.Size(413, 24);
             this.cbProgramador.TabIndex = 6;
+            this.cbProgramador.SelectedIndexChanged += new System.EventHandler(this.cbProgramador_SelectedIndexChanged);
             // 
             // txtOrdem
             // 
@@ -301,6 +302,7 @@
             this.btFechar.TabIndex = 29;
             this.btFechar.Text = "Fechar";
             this.btFechar.UseVisualStyleBackColor = true;
+            this.btFechar.Click += new System.EventHandler(this.btFechar_Click);
             // 
             // txtStoryPoints
             // 

@@ -156,7 +156,6 @@ namespace iTasks
                 MessageBox.Show("Story points inválido.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
             if (dtFim.Value <= dtInicio.Value)
             {
                 MessageBox.Show("Data prevista de fim deve ser após a de início.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -174,20 +173,42 @@ namespace iTasks
             tarefa.DataPrevistaInicio = dtInicio.Value;
             tarefa.DataPrevistaFim = dtFim.Value;
 
+            string erro, infoSwap;
+            bool sucesso;
+
             if (tarefaAtual == null)
             {
                 // Nova tarefa: estado ToDo, gestor é o usuário logado (gestor)
                 tarefa.EstadoAtual = EstadoTarefa.ToDo;
                 tarefa.DataCriacao = DateTime.Now;
-                tarefa.GestorId = (usuarioLogado is Gestor g) ? g.Id : 0; 
-                tarefaController.CriarTarefa(tarefa);
+                tarefa.GestorId = (usuarioLogado is Gestor g) ? g.Id : 0;
+                sucesso = tarefaController.CriarTarefa(tarefa, out erro);
+
+                if (!sucesso)
+                {
+                    MessageBox.Show(erro, "Erro ao criar tarefa", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 MessageBox.Show("Tarefa criada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                // Atualização (só certos campos editáveis)
-                tarefaController.AtualizarTarefa(tarefa);
-                MessageBox.Show("Tarefa atualizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                sucesso = tarefaController.AtualizarTarefa(tarefa, out erro, out infoSwap);
+
+                if (!sucesso)
+                {
+                    MessageBox.Show(erro, "Erro ao atualizar tarefa", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                // Se houve swap, avisa o usuário
+                if (!string.IsNullOrWhiteSpace(infoSwap))
+                {
+                    MessageBox.Show(infoSwap, "Troca de ordem realizada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Tarefa atualizada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             this.Close();
         }
@@ -212,6 +233,28 @@ namespace iTasks
         private void frmDetalhesTarefa_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.manager.ShowKanbanForm(usuarioLogado, true);
+        }
+
+        private void btFechar_Click(object sender, EventArgs e)
+        {
+            this.manager.ShowKanbanForm(usuarioLogado, true);
+        }
+
+
+        private void cbProgramador_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbProgramador.SelectedItem is Programador p)
+            {
+                int proximaOrdem = tarefaController.ProximaOrdemDisponivel(p.Id);
+                txtOrdem.Text = proximaOrdem.ToString();
+                txtOrdem.Enabled = true;
+            }
+            else
+            {
+                txtOrdem.Text = "";
+                txtOrdem.Enabled = false;
+            }
+
         }
     }
 }

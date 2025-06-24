@@ -33,25 +33,75 @@ namespace iTasks.controller
             }
         }
 
-        public void CriarTarefa(Tarefa tarefa)
+        public bool CriarTarefa(Tarefa tarefa, out string erro)
         {
+            erro = "";
             using (var db = new iTasksContext())
             {
+                bool ordemRepetida = db.Tarefas.Any(t =>
+                    t.ProgramadorId == tarefa.ProgramadorId &&
+                    t.OrdemExecucao == tarefa.OrdemExecucao &&
+                    t.EstadoAtual != EstadoTarefa.Done);
+
+                if (ordemRepetida)
+                {
+                    erro = "Já existe uma tarefa não concluída com essa ordem para este programador.";
+                    return false;
+                }
+
                 tarefa.DataCriacao = DateTime.Now;
                 tarefa.EstadoAtual = EstadoTarefa.ToDo;
                 tarefa.DataRealInicio = null;
                 tarefa.DataRealFim = null;
                 db.Tarefas.Add(tarefa);
                 db.SaveChanges();
+                return true;
             }
         }
 
-        public void AtualizarTarefa(Tarefa tarefa)
+        public bool AtualizarTarefa(Tarefa tarefa, out string erro, out string infoSwap)
         {
+            erro = "";
+            infoSwap = "";
             using (var db = new iTasksContext())
             {
-                db.Entry(tarefa).State = EntityState.Modified;
+                var tarefaExistente = db.Tarefas.Find(tarefa.Id);
+                if (tarefaExistente == null)
+                {
+                    erro = "Tarefa não encontrada.";
+                    return false;
+                }
+
+                // Verifica se mudou a ordem
+                if (tarefaExistente.OrdemExecucao != tarefa.OrdemExecucao)
+                {
+                    var outraTarefa = db.Tarefas.FirstOrDefault(t =>
+                        t.ProgramadorId == tarefa.ProgramadorId &&
+                        t.OrdemExecucao == tarefa.OrdemExecucao &&
+                        t.EstadoAtual != EstadoTarefa.Done &&
+                        t.Id != tarefa.Id);
+
+                    if (outraTarefa != null)
+                    {
+                        // Faz o swap de ordens
+                        int ordemOriginal = tarefaExistente.OrdemExecucao;
+                        outraTarefa.OrdemExecucao = ordemOriginal;
+
+                        // Prepara a mensagem de swap
+                        infoSwap = $"Tarefa '{tarefaExistente.Descricao}' trocou de ordem com '{outraTarefa.Descricao}' (ID {outraTarefa.Id}).";
+                    }
+                }
+
+                // Atualiza os outros campos
+                tarefaExistente.Descricao = tarefa.Descricao;
+                tarefaExistente.TipoTarefaId = tarefa.TipoTarefaId;
+                tarefaExistente.StoryPoints = tarefa.StoryPoints;
+                tarefaExistente.DataPrevistaInicio = tarefa.DataPrevistaInicio;
+                tarefaExistente.DataPrevistaFim = tarefa.DataPrevistaFim;
+                tarefaExistente.OrdemExecucao = tarefa.OrdemExecucao;
+
                 db.SaveChanges();
+                return true;
             }
         }
 
@@ -89,7 +139,15 @@ namespace iTasks.controller
             erro = "";
             using (var db = new iTasksContext())
             {
+
                 var tarefa = db.Tarefas.Find(tarefaId);
+
+                if (tarefa.EstadoAtual != EstadoTarefa.Doing)
+                {
+                    erro = "A tarefa só pode ser concluída a partir do estado Doing.";
+                    return false;
+                }
+
                 if (tarefa == null) { erro = "Tarefa não encontrada."; return false; }
                 if (tarefa.ProgramadorId != programadorId) { erro = "Apenas o programador responsável pode terminar esta tarefa."; return false; }
                 if (tarefa.EstadoAtual != EstadoTarefa.Doing) { erro = "A tarefa deve estar em Doing para ser concluída."; return false; }
@@ -121,6 +179,20 @@ namespace iTasks.controller
                 tarefa.DataRealInicio = null; // Limpa data real de início
                 db.SaveChanges();
                 return true;
+            }
+        }
+
+        public int ProximaOrdemDisponivel(int programadorId)
+        {
+            using (var db = new iTasksContext())
+            {
+                // Pega o maior número de ordem entre tarefas NÃO DONE
+                var maiorOrdem = db.Tarefas
+                    .Where(t => t.ProgramadorId == programadorId && t.EstadoAtual != EstadoTarefa.Done)
+                    .Select(t => (int?)t.OrdemExecucao)
+                    .Max();
+
+                return (maiorOrdem ?? 0) + 1; // Começa em 1 se não existir nenhuma
             }
         }
     }
