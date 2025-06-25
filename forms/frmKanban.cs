@@ -20,6 +20,12 @@ namespace iTasks
             this.manager = manager;
             this.user = user;
 
+            // Esconde a opção "Tarefas em Curso" se o usuário NÃO for gestor
+            if (!(user is Gestor))
+            {
+                tarefasEmCursoToolStripMenuItem.Visible = false;
+            }
+
             if (user is Gestor)
             {
                 labelNome.Text = $"{user.Nome} (Gestor)";
@@ -146,6 +152,9 @@ namespace iTasks
             }
         }
 
-       
+        private void tarefasEmCursoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.manager.ShowConsultaTarefasEmCursoForm(this.user, true);
+        }
     }
 }
