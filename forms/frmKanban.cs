@@ -1,10 +1,13 @@
 ﻿using iTasks.controller;
+using iTasks.models.Enums;
 using iTasks.models.Tarefas;
 using iTasks.models.Usuarios;
-using iTasks.models.Enums;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace iTasks
 {
@@ -160,6 +163,44 @@ namespace iTasks
         private void tarefasTerminadasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.manager.ShowConsultaTarefasConcluidasForm(this.user, true);
+        }
+
+        private void exportarParaCSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // 1. Buscar as tarefas concluídas do gestor
+            var tarefas = tarefaController.ListarTarefasConcluidasDoGestor(user.Id);
+
+            // 2. Montar o CSV
+            var linhas = new List<string>();
+            // Cabeçalho
+            linhas.Add("Programador;Descricao;DataPrevistaInicio;DataPrevistaFim;TipoTarefa;DataRealInicio;DataRealFim;DiasPrevistos;DiasGastos");
+            // Dados
+            foreach (var t in tarefas)
+            {
+                linhas.Add(
+                    $"{t.Programador};" +
+                    $"{t.Descricao};" +
+                    $"{t.DataPrevistaInicio?.ToString("dd/MM/yyyy HH:mm") ?? ""};" +
+                    $"{t.DataPrevistaFim?.ToString("dd/MM/yyyy HH:mm") ?? ""};" +
+                    $"{t.TipoTarefa};" +
+                    $"{t.DataRealInicio?.ToString("dd/MM/yyyy HH:mm") ?? ""};" +
+                    $"{t.DataRealFim?.ToString("dd/MM/yyyy HH:mm") ?? ""};" +
+                    $"{t.DiasPrevistos};" +
+                    $"{t.DiasGastos}"
+                );
+            }
+
+                // 3. Salvar o arquivo
+                using (var sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "CSV files (*.csv)|*.csv";
+                sfd.Title = "Exportar tarefas concluídas";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllLines(sfd.FileName, linhas, Encoding.UTF8);
+                    MessageBox.Show("Exportação concluída com sucesso!", "Exportar CSV", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
     }
 }

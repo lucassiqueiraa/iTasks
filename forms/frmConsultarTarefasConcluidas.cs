@@ -44,6 +44,35 @@ namespace iTasks
             });
             gvTarefasConcluidas.Columns.Add(new DataGridViewTextBoxColumn
             {
+                DataPropertyName = "DataPrevistaInicio",
+                HeaderText = "Prev. Início",
+                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
+            });
+            gvTarefasConcluidas.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "DataPrevistaFim",
+                HeaderText = "Prev. Fim",
+                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
+            });
+            gvTarefasConcluidas.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "TipoTarefa",
+                HeaderText = "Tipo"
+            });
+            gvTarefasConcluidas.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "DataRealInicio",
+                HeaderText = "Real Início",
+                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
+            });
+            gvTarefasConcluidas.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "DataRealFim",
+                HeaderText = "Real Fim",
+                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
+            });
+            gvTarefasConcluidas.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 DataPropertyName = "DiasPrevistos",
                 HeaderText = "Dias Previstos",
                 DefaultCellStyle = { Format = "N2" }

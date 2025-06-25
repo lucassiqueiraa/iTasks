@@ -254,25 +254,35 @@ namespace iTasks.controller
             using (var db = new iTasksContext())
             {
                 var tarefas = db.Tarefas
-                    .Where(t => t.GestorId == gestorId && t.EstadoAtual == EstadoTarefa.Done)
-                    .Select(t => new
-                    {
-                        t.Descricao,
-                        Programador = t.Programador.Nome,
-                        t.DataPrevistaInicio,
-                        t.DataPrevistaFim,
-                        t.DataRealInicio,
-                        t.DataRealFim
-                    })
-                    .ToList()
-                    .Select(t => new TarefaConcluidaDTO
-                    {
-                        Descricao = t.Descricao,
-                        Programador = t.Programador,
-                        DiasPrevistos = (t.DataPrevistaFim - t.DataPrevistaInicio).TotalDays,
-                        DiasGastos = (t.DataRealFim - t.DataRealInicio)?.TotalDays ?? 0,
-                    })
-                    .ToList();
+                .Where(t => t.GestorId == gestorId && t.EstadoAtual == EstadoTarefa.Done)
+                .Select(t => new
+                {
+                    t.Descricao,
+                    Programador = t.Programador.Nome,
+                    t.DataPrevistaInicio,
+                    t.DataPrevistaFim,
+                    TipoTarefaNome = t.TipoTarefa.Nome,
+                    t.DataRealInicio,
+                    t.DataRealFim
+                })
+                .ToList() 
+                .Select(t => new TarefaConcluidaDTO
+                {
+                    Descricao = t.Descricao,
+                    Programador = t.Programador,
+                    DataPrevistaInicio = t.DataPrevistaInicio,
+                    DataPrevistaFim = t.DataPrevistaFim,
+                    TipoTarefa = t.TipoTarefaNome,
+                    DataRealInicio = t.DataRealInicio,
+                    DataRealFim = t.DataRealFim,
+                    DiasPrevistos = (t.DataPrevistaFim is DateTime pf && t.DataPrevistaInicio is DateTime pi)
+                        ? (pf - pi).TotalDays
+                        : 0,
+                    DiasGastos = (t.DataRealFim is DateTime rf && t.DataRealInicio is DateTime ri)
+                        ? (rf - ri).TotalDays
+                        : 0,
+                })
+                .ToList();
 
                 return tarefas;
             }
