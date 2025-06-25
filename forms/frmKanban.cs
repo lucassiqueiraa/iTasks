@@ -24,6 +24,7 @@ namespace iTasks
             if (!(user is Gestor))
             {
                 tarefasEmCursoToolStripMenuItem.Visible = false;
+                gerirUtilizadoresToolStripMenuItem.Visible = false;
             }
 
             if (user is Gestor)

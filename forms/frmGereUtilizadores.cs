@@ -15,6 +15,8 @@ namespace iTasks
         private FormManager formManager { get; set; }
         private UsuarioController usuarioController = new UsuarioController();
 
+        private Utilizador usuarioLogado;
+
         private int? selectedGestorId = null;
         private int? selectedProgramadorId = null;
 
@@ -22,6 +24,7 @@ namespace iTasks
         {
             InitializeComponent();
             this.formManager = formManager;
+            this.usuarioLogado = formManager.usuarioLogado;
             LoadComboBoxes();
             LoadUsersFromDatabase();
         }
@@ -151,7 +154,7 @@ namespace iTasks
                 gestor.Departamento = (Departamento)cbDepartamento.SelectedItem;
                 gestor.GereUtilizadores = chkGereUtilizadores.Checked;
 
-                usuarioController.SalvarGestor(gestor);
+                usuarioController.SalvarGestor(gestor, usuarioLogado);
                 LoadUsersFromDatabase();
 
                 SelecionarNaLista(lstListaGestores, gestor.Id, ref selectedGestorId);
@@ -258,7 +261,7 @@ namespace iTasks
                 programador.GestorId = (int)cbGestorProg.SelectedValue;
                 programador.NivelExperiencia = (NivelExperiencia)cbNivelProg.SelectedItem;
 
-                usuarioController.SalvarProgramador(programador);
+                usuarioController.SalvarProgramador(programador, this.usuarioLogado);
 
                 LoadUsersFromDatabase();
 

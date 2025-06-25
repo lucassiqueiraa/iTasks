@@ -1,8 +1,9 @@
-﻿using iTasks.models.Usuarios;
+﻿using iTasks.models.Enums;
+using iTasks.models.Usuarios;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using iTasks.models.Enums;
 
 namespace iTasks.controller
 {
@@ -72,8 +73,11 @@ namespace iTasks.controller
             }
         }
 
-        public void SalvarGestor(Gestor gestor)
+        public void SalvarGestor(Gestor gestor, Utilizador usuarioLogado)
         {
+            if (!(usuarioLogado is Gestor))
+                throw new UnauthorizedAccessException("Somente gestores podem criar ou editar gestores.");
+
             using (var db = new iTasksContext())
             {
                 if (gestor.Id == 0)
@@ -85,8 +89,11 @@ namespace iTasks.controller
             }
         }
 
-        public void SalvarProgramador(Programador programador)
+        public void SalvarProgramador(Programador programador, Utilizador usuarioLogado)
         {
+            if (!(usuarioLogado is Gestor))
+                throw new UnauthorizedAccessException("Somente gestores podem criar ou editar programadores.");
+
             using (var db = new iTasksContext())
             {
                 if (programador.Id == 0)
