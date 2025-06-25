@@ -124,6 +124,7 @@
     <Compile Include="models\Enums\EstadoTarefa.cs" />
     <Compile Include="models\Enums\NivelExperiencia.cs" />
     <Compile Include="models\Tarefas\Tarefa.cs" />
+    <Compile Include="models\Tarefas\TarefaKanbanDTO.cs" />
     <Compile Include="models\Tarefas\TipoTarefa.cs" />
     <Compile Include="models\Usuarios\Gestor.cs" />
     <Compile Include="models\Usuarios\Programador.cs" />

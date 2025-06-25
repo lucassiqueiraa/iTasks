@@ -25,5 +25,18 @@ namespace iTasks.helpers
 
             return -1;
         }
+
+        public static string FormatTimeSpanFriendly(TimeSpan ts)
+        {
+            if (ts == TimeSpan.Zero) return "-";
+            var parts = new List<string>();
+            if (Math.Abs(ts.Days) > 0) parts.Add($"{Math.Abs(ts.Days)}d");
+            if (Math.Abs(ts.Hours) > 0) parts.Add($"{Math.Abs(ts.Hours)}h");
+            if (Math.Abs(ts.Minutes) > 0) parts.Add($"{Math.Abs(ts.Minutes)}m");
+            if (parts.Count == 0) return "<1m";
+            return string.Join(" ", parts);
+        }
     }
+
+
 }

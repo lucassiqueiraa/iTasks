@@ -182,6 +182,45 @@ namespace iTasks.controller
             }
         }
 
+        public List<TarefaKanbanDTO> ListarTarefasEmCursoParaGestor(int gestorId)
+        {
+            using (var db = new iTasksContext())
+            {
+                var agora = DateTime.Now;
+                var tarefas = db.Tarefas
+                    .Where(t => t.GestorId == gestorId && t.EstadoAtual != EstadoTarefa.Done)
+                    .Select(t => new
+                    {
+                        t.Descricao,
+                        Programador = t.Programador.Nome,
+                        t.EstadoAtual,
+                        t.OrdemExecucao,
+                        t.DataPrevistaInicio,
+                        t.DataPrevistaFim,
+                        t.DataRealInicio,
+                        t.StoryPoints
+                    })
+                    .ToList()
+                    .Select(t => new TarefaKanbanDTO
+                    {
+                        Descricao = t.Descricao,
+                        Programador = t.Programador,
+                        EstadoAtual = t.EstadoAtual,
+                        OrdemExecucao = t.OrdemExecucao,
+                        DataPrevistaInicio = t.DataPrevistaInicio,
+                        DataPrevistaFim = t.DataPrevistaFim,
+                        DataRealInicio = t.DataRealInicio,
+                        StoryPoints = t.StoryPoints,
+                        TempoEmFalta = t.DataPrevistaFim > agora ? (t.DataPrevistaFim - agora) : TimeSpan.Zero,
+                        Atraso = t.DataPrevistaFim < agora ? (agora - t.DataPrevistaFim) : TimeSpan.Zero
+                    })
+                    .OrderBy(t => t.EstadoAtual)
+                    .ToList();
+
+                return tarefas;
+            }
+        }
+
         public int ProximaOrdemDisponivel(int programadorId)
         {
             using (var db = new iTasksContext())
