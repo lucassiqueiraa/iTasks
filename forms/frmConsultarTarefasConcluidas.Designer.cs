@@ -36,18 +36,19 @@
             // btFechar
             // 
             this.btFechar.Location = new System.Drawing.Point(1245, 511);
-            this.btFechar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btFechar.Margin = new System.Windows.Forms.Padding(4);
             this.btFechar.Name = "btFechar";
             this.btFechar.Size = new System.Drawing.Size(139, 28);
             this.btFechar.TabIndex = 32;
             this.btFechar.Text = "Fechar";
             this.btFechar.UseVisualStyleBackColor = true;
+            this.btFechar.Click += new System.EventHandler(this.btFechar_Click);
             // 
             // gvTarefasConcluidas
             // 
             this.gvTarefasConcluidas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvTarefasConcluidas.Location = new System.Drawing.Point(16, 15);
-            this.gvTarefasConcluidas.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gvTarefasConcluidas.Margin = new System.Windows.Forms.Padding(4);
             this.gvTarefasConcluidas.Name = "gvTarefasConcluidas";
             this.gvTarefasConcluidas.RowHeadersWidth = 51;
             this.gvTarefasConcluidas.Size = new System.Drawing.Size(1368, 486);
@@ -60,9 +61,11 @@
             this.ClientSize = new System.Drawing.Size(1403, 554);
             this.Controls.Add(this.btFechar);
             this.Controls.Add(this.gvTarefasConcluidas);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmConsultarTarefasConcluidas";
             this.Text = "frmConsultarTarefasConcluidas";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmConsultarTarefasConcluidas_FormClosing);
+            this.Load += new System.EventHandler(this.frmConsultarTarefasConcluidas_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gvTarefasConcluidas)).EndInit();
             this.ResumeLayout(false);
 

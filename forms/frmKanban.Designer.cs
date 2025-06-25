@@ -199,6 +199,7 @@
             this.tarefasTerminadasToolStripMenuItem.Name = "tarefasTerminadasToolStripMenuItem";
             this.tarefasTerminadasToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.tarefasTerminadasToolStripMenuItem.Text = "Tarefas Concluídas";
+            this.tarefasTerminadasToolStripMenuItem.Click += new System.EventHandler(this.tarefasTerminadasToolStripMenuItem_Click);
             // 
             // tarefasEmCursoToolStripMenuItem
             // 

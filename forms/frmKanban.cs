@@ -156,5 +156,10 @@ namespace iTasks
         {
             this.manager.ShowConsultaTarefasEmCursoForm(this.user, true);
         }
+
+        private void tarefasTerminadasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.manager.ShowConsultaTarefasConcluidasForm(this.user, true);
+        }
     }
 }

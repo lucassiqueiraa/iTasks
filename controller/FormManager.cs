@@ -22,6 +22,7 @@ namespace iTasks.controller
         private frmGereTiposTarefas frmGereTiposTarefas = null;
         private frmDetalhesTarefa frmDetalhesTarefa = null;
         private frmConsultaTarefasEmCurso frmConsultaTarefasEmCurso = null;
+        private frmConsultarTarefasConcluidas frmConsultaTarefasConcluidas = null;
 
         private void ShowForm<T>(ref T form, bool toggle = true, params object[] args) where T : Form
         {
@@ -81,6 +82,14 @@ namespace iTasks.controller
         public void ShowConsultaTarefasEmCursoForm(Utilizador user, bool toggle = true)
         {
             ShowForm(ref frmConsultaTarefasEmCurso, toggle, this, user);
+        }
+
+        public void ShowConsultaTarefasConcluidasForm(Utilizador user, bool toggle = true)
+        {
+            if (frmConsultaTarefasConcluidas == null || frmConsultaTarefasConcluidas.IsDisposed)
+                frmConsultaTarefasConcluidas = new frmConsultarTarefasConcluidas(this, user);
+
+            ShowForm(ref frmConsultaTarefasConcluidas, toggle, this, user);
         }
 
 

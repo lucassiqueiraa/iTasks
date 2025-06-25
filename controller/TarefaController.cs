@@ -221,6 +221,63 @@ namespace iTasks.controller
             }
         }
 
+
+        public List<TarefaConcluidaDTO> ListarTarefasConcluidasDoProgramador(int programadorId)
+        {
+            using (var db = new iTasksContext())
+            {
+                var tarefas = db.Tarefas
+                    .Where(t => t.ProgramadorId == programadorId && t.EstadoAtual == EstadoTarefa.Done)
+                    .Select(t => new
+                    {
+                        t.Descricao,
+                        t.DataRealInicio,
+                        t.DataRealFim
+                    })
+                    .ToList() // Executa o SQL aqui
+                    .Select(t => new TarefaConcluidaDTO
+                    {
+                        Descricao = t.Descricao,
+                        DiasGastos = (t.DataRealFim.HasValue && t.DataRealInicio.HasValue)
+                            ? (t.DataRealFim.Value - t.DataRealInicio.Value).TotalDays
+                            : 0
+                    })
+                    .ToList();
+
+                return tarefas;
+            }
+        }
+
+
+        public List<TarefaConcluidaDTO> ListarTarefasConcluidasDoGestor(int gestorId)
+        {
+            using (var db = new iTasksContext())
+            {
+                var tarefas = db.Tarefas
+                    .Where(t => t.GestorId == gestorId && t.EstadoAtual == EstadoTarefa.Done)
+                    .Select(t => new
+                    {
+                        t.Descricao,
+                        Programador = t.Programador.Nome,
+                        t.DataPrevistaInicio,
+                        t.DataPrevistaFim,
+                        t.DataRealInicio,
+                        t.DataRealFim
+                    })
+                    .ToList()
+                    .Select(t => new TarefaConcluidaDTO
+                    {
+                        Descricao = t.Descricao,
+                        Programador = t.Programador,
+                        DiasPrevistos = (t.DataPrevistaFim - t.DataPrevistaInicio).TotalDays,
+                        DiasGastos = (t.DataRealFim - t.DataRealInicio)?.TotalDays ?? 0,
+                    })
+                    .ToList();
+
+                return tarefas;
+            }
+        }
+
         public int ProximaOrdemDisponivel(int programadorId)
         {
             using (var db = new iTasksContext())
