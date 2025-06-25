@@ -5,10 +5,17 @@ using System.Linq;
 using iTasks.models.Tarefas;
 using iTasks.models.Enums;
 
+
 namespace iTasks.controller
 {
     public class TarefaController
     {
+        private readonly TarefaService _tarefaService;
+
+        public TarefaController()
+        {
+            _tarefaService = new TarefaService(new iTasksContext());
+        }
         public List<Tarefa> ListarPorEstado(EstadoTarefa estado, int? idProgramador = null)
         {
             using (var db = new iTasksContext())
@@ -290,6 +297,11 @@ namespace iTasks.controller
 
                 return (maiorOrdem ?? 0) + 1; // Começa em 1 se não existir nenhuma
             }
+        }
+
+        public double CalcularTempoPrevistoParaToDos(int gestorId)
+        {
+            return _tarefaService.CalcularTempoPrevistoParaToDos(gestorId);
         }
     }
 }

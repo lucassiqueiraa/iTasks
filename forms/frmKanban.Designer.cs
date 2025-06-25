@@ -50,6 +50,7 @@
             this.btNova = new System.Windows.Forms.Button();
             this.labelNome = new System.Windows.Forms.Label();
             this.btPrevisao = new System.Windows.Forms.Button();
+            this.lblTempoPrevisto = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -272,11 +273,21 @@
             this.btPrevisao.Text = "Ver Previsão de Conclusão";
             this.btPrevisao.UseVisualStyleBackColor = true;
             // 
+            // lblTempoPrevisto
+            // 
+            this.lblTempoPrevisto.AutoSize = true;
+            this.lblTempoPrevisto.Location = new System.Drawing.Point(262, 42);
+            this.lblTempoPrevisto.Name = "lblTempoPrevisto";
+            this.lblTempoPrevisto.Size = new System.Drawing.Size(44, 16);
+            this.lblTempoPrevisto.TabIndex = 1;
+            this.lblTempoPrevisto.Text = "label1";
+            // 
             // frmKanban
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1257, 661);
+            this.Controls.Add(this.lblTempoPrevisto);
             this.Controls.Add(this.btPrevisao);
             this.Controls.Add(this.labelNome);
             this.Controls.Add(this.btNova);
@@ -325,5 +336,6 @@
         private System.Windows.Forms.Button btNova;
         private System.Windows.Forms.Label labelNome;
         private System.Windows.Forms.Button btPrevisao;
+        private System.Windows.Forms.Label lblTempoPrevisto;
     }
 }

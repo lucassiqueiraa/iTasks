@@ -54,6 +54,17 @@ namespace iTasks
 
             lstDone.DataSource = tarefaController.ListarPorEstado(EstadoTarefa.Done, null);
             lstDone.DisplayMember = "Descricao";
+
+            if (user is Gestor)
+            {
+                double horasPrevistas = tarefaController.CalcularTempoPrevistoParaToDos(user.Id);
+                lblTempoPrevisto.Text = $"Tempo total previsto para ToDo: {horasPrevistas:N2} horas";
+                lblTempoPrevisto.Visible = true;
+            }
+            else
+            {
+                lblTempoPrevisto.Visible = false;
+            }
         }
 
         private void gerirUtilizadoresToolStripMenuItem_Click(object sender, EventArgs e)
